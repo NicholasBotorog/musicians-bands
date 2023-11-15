@@ -49,6 +49,7 @@ describe("Band, Musician, and Song Models", () => {
   });
 
   test("can delete a Band", async () => {
+    // TODO - test deleting a band
     const testBand = await Band.create({ name: "test", genre: "fake" });
     let res = await testBand.destroy();
     console.log(res);
@@ -56,6 +57,8 @@ describe("Band, Musician, and Song Models", () => {
   });
 
   test("can delete a Musician", async () => {
+    // TODO - test deleting a musician
+
     const testMusician = await Musician.create({
       name: "testM",
       instrument: "fakeM",
