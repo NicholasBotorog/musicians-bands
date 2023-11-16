@@ -77,5 +77,15 @@ describe("Band, Musician, and Song Models", () => {
     const idMusician = musicianWithBand.BandId
     expect(response[0].BandId).toEqual(idMusician)
   })
+  test('ManyToMany Relations Song - Band', async () => {
+    const band1 = await Band.create({ name: 'test', genre: 'pop'})
+    const song1 = await Song.create({title:"whatever",year:"2010", length:3})
+    const song2 = await Song.create({title:"whatever2",year:"2011", length:4})
+    const songWithBand = await song1.addBand(band1)
+    const bandWithSongs = await band1.setSongs([song1,song2])
+    expect(songWithBand[0].BandId).toBe(band1.id)
+    expect(songWithBand[0].BandId).toBe(song2.id);
+    
+  })
 
 });
