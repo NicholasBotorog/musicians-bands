@@ -7,17 +7,24 @@ const { Song } = require("./models/Song");
 Band.hasMany(Musician)
 Musician.belongsTo(Band)
 
-// async function main() { 
-//     const band = await Band.create({ name: 'test', genre: 'pop'})
-//     const musician = await Musician.create({ name: 'Test', instrument: 'guitar'})
-//     const updatedBand = await band.addMusician(musician)
-//     const musiciansInBands = await band.getMusicians()
-//     // // console.log('GET MUSICIANS->',musiciansInBands)
-//     // const bands = await Band.findAll()
-//     // bands.forEach((band) => console.log(band.getMusicians()))
-//     console.log(musician.__proto__)
-// }
-// main()
+Song.belongsToMany(Band, {through: "Songs-Band"})
+Band.belongsToMany(Song, {through: "Songs-Band"})
+
+async function main() { 
+const band1 = await Band.create({ name: 'test', genre: 'pop'})
+const song1 = await Song.create({title:"whatever",year:"2010", length:3})
+const song2 = await Song.create({title:"whatever2",year:"2011", length:4})
+// const songWithBand = await song1.addBand(band1)
+const bandWithSongs = await band1.setSongs(song1,song2)
+console.log("bandWithSongs", JSON.stringify(bandWithSongs,null,2))
+bandWithSongs.forEach(element => console.log("element",element))
+  
+
+
+    console.log(song1.__proto__)
+    console.log(band1.__proto__)
+}
+main()
 
 module.exports = {
   Band,
