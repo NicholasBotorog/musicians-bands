@@ -67,4 +67,15 @@ describe("Band, Musician, and Song Models", () => {
     console.log(res);
     expect(res).toMatchObject({ name: "testM", instrument: "fakeM" });
   });
+
+  test('OneToMany Relations Band - Musician', async()=>{
+    const band = await Band.create({ name: 'test', genre: 'pop'})
+    const musician = await Musician.create({ name: 'Test', instrument: 'guitar'})
+    const musicianWithBand = await musician.setBand(band)
+    const updatedBand = await band.addMusician(musician)
+    const response = await updatedBand.getMusicians()
+    const idMusician = musicianWithBand.BandId
+    expect(response[0].BandId).toEqual(idMusician)
+  })
+
 });
