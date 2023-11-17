@@ -77,15 +77,46 @@ describe("Band, Musician, and Song Models", () => {
     const idMusician = musicianWithBand.BandId
     expect(response[0].BandId).toEqual(idMusician)
   })
-  test('ManyToMany Relations Song - Band', async () => {
-    const band1 = await Band.create({ name: 'test', genre: 'pop'})
-    const song1 = await Song.create({title:"whatever",year:"2010", length:3})
-    const song2 = await Song.create({title:"whatever2",year:"2011", length:4})
-    const songWithBand = await song1.addBand(band1)
-    const bandWithSongs = await band1.setSongs([song1,song2])
-    expect(songWithBand[0].BandId).toBe(band1.id)
-    expect(songWithBand[0].BandId).toBe(song2.id);
-    
-  })
+
+  test('A song can be associated with many bands and vice versa', async () => {
+    // Create instances of models
+    const band1 = await Band.create({ name: 'test', genre: 'pop' });
+    const band2 = await Band.create({ name: 'test2', genre: 'metal' });
+    const song1 = await Song.create({ 
+      title: 'whatever',
+      year: '2010',
+      length: 3, 
+    });
+
+    const song2 = await Song.create({
+      title: 'whatever2',
+      year: '2011',
+      length: 4,
+    });
+
+    // Associate song with bands
+    await song1.addBands([band1, band2]);
+
+    // Fetch the song with associated bands
+    const fetchedSong1 = await Song.findByPk(song1.id, {
+      include: Band,
+    });
+
+    // Check if the song is associated with the bands
+    expect(fetchedSong1.Bands).toHaveLength(2);
+    expect(fetchedSong1.Bands.map((band) => band.id)).toEqual(
+      expect.arrayContaining([band1.id, band2.id])
+    );
+
+    // Similarly, you can test the reverse relationship
+    const fetchedBand1 = await Band.findByPk(band1.id, {
+      include: Song,
+    });
+
+    //band1 also has song1 associated with it
+    expect(fetchedBand1.Songs).toContainEqual(
+      expect.objectContaining({ id: song1.id })
+    );
+  });
 
 });
